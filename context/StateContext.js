@@ -1,10 +1,14 @@
+// Note: This is the files where we're going to manage the entire state of the application
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 
 const Context = createContext();
 
+
 export const StateContext = ({ children }) => {
   const [showCart, setShowCart] = useState(false);
+  // this states is set with the data from the local storage
   const [cartItems, setCartItems] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const [totalQuantities, setTotalQuantities] = useState(0);
@@ -13,6 +17,8 @@ export const StateContext = ({ children }) => {
   let foundProduct;
   let index;
 
+
+  // Add the item to the cart
   const onAdd = (product, quantity) => {
     const checkProductInCart = cartItems.find((item) => item._id === product._id);
     
@@ -46,7 +52,8 @@ export const StateContext = ({ children }) => {
     setCartItems(newCartItems);
   }
 
-  const toggleCartItemQuanitity = (id, value) => {
+  // updating
+  const toggleCartItemQuantity = (id, value) => {
     foundProduct = cartItems.find((item) => item._id === id)
     index = cartItems.findIndex((product) => product._id === id);
     const newCartItems = cartItems.filter((item) => item._id !== id)
@@ -64,10 +71,12 @@ export const StateContext = ({ children }) => {
     }
   }
 
+  // increase quantity
   const incQty = () => {
     setQty((prevQty) => prevQty + 1);
   }
 
+  // decrease quantity
   const decQty = () => {
     setQty((prevQty) => {
       if(prevQty - 1 < 1) return 1;
@@ -76,6 +85,7 @@ export const StateContext = ({ children }) => {
     });
   }
 
+  //Important Note: We are providing all the states we've defined to entire component tree of our application anywhere needed.
   return (
     <Context.Provider
       value={{
@@ -88,7 +98,7 @@ export const StateContext = ({ children }) => {
         incQty,
         decQty,
         onAdd,
-        toggleCartItemQuanitity,
+        toggleCartItemQuantity,
         onRemove,
         setCartItems,
         setTotalPrice,

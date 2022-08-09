@@ -1,3 +1,5 @@
+//Note: [slug] meaning "slug" is a variable (an urlQuery)
+
 import React, { useState } from 'react';
 import { AiOutlineMinus, AiOutlinePlus, AiFillStar, AiOutlineStar } from 'react-icons/ai';
 
@@ -21,9 +23,11 @@ const ProductDetails = ({ product, products }) => {
       <div className="product-detail-container">
         <div>
           <div className="image-container">
+            {/* see product-detail-image css style */}
             <img src={urlFor(image && image[index])} className="product-detail-image" />
           </div>
           <div className="small-images-container">
+            {/* Selecting specific images */}
             {image?.map((item, i) => (
               <img 
                 key={i}
@@ -67,6 +71,7 @@ const ProductDetails = ({ product, products }) => {
         </div>
       </div>
 
+     {/* Displaying other products */}
       <div className="maylike-products-wrapper">
           <h2>You may also like</h2>
           <div className="marquee">
@@ -81,13 +86,14 @@ const ProductDetails = ({ product, products }) => {
   )
 }
 
+// list of paths to be statically generated
 export const getStaticPaths = async () => {
-  const query = `*[_type == "product"] {
-    slug {
-      current
+    // fetch all the products but give me the data for the current product matching the slug
+  const query = `*[_type=="product"]{
+    slug{
+        current
     }
-  }
-  `;
+  }`;
 
   const products = await client.fetch(query);
 
@@ -103,8 +109,12 @@ export const getStaticPaths = async () => {
   }
 }
 
+//Note: We're using getStaticProps because the data comes from a headless CMS
+
 export const getStaticProps = async ({ params: { slug }}) => {
+    // we're making a query only to fetch the first product that matches the slug
   const query = `*[_type == "product" && slug.current == '${slug}'][0]`;
+  // query to fetch all the products
   const productsQuery = '*[_type == "product"]'
   
   const product = await client.fetch(query);
